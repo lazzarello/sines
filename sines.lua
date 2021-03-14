@@ -166,10 +166,12 @@ function build_scale()
 	for i = 1, num_to_add do
 		table.insert(notes, notes[16 - num_to_add])
 	end
-  for i = 1,#lfo do
-    --also set notes
-    set_freq(i, MusicUtil.note_num_to_freq(notes[i]))
-  end	
+	-- why is this here?
+  -- for i = 1,#lfo do
+    -- also set notes
+    -- this function calls redraw()
+  --  set_freq(i, MusicUtil.note_num_to_freq(notes[i]))
+  -- end	
 end
 
 function set_notes()
