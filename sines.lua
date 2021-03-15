@@ -48,7 +48,7 @@ local envs = {{"drone", 1.0, 1.0, 1.0},
 {"evolve2", 0.3, 15.0, 11.0},
 {"evolve3", 0.3, 20.0, 12.0},
 {"evolve4", 0.4, 25.0, 15.0},
-{"arc", 0.0, 1.0, 1.0}}
+{"arc", 0.0, 0.01, 1.0}}
 -- use a table constructor to create a record for each envelope name.
 -- refactoring might be not obvious since envelopes["drone"] = aTable and envelopes[1] = nil.
 -- https://www.lua.org/pil/3.6.html
@@ -144,7 +144,7 @@ function add_params()
 		params:set_action("cents" .. i, function(x) tune(i - 1, x) end)
 		params:add_control("fm_index" .. i, "fm index " .. i, controlspec.new(0.0, 200.0, 'lin', 1.0, 3.0))
 		params:set_action("fm_index" .. i, function(x) set_fm_index(i - 1, x) end)
-		params:add{type = "number", id = "env" ..i, name = "env " .. i, min = 1, max = #envs, default = 1, formatter = function(param) return env_formatter(param:get()) end, action = function(x) set_env(i, x) end}
+		params:add{type = "number", id = "env" ..i, name = "env " .. i, min = 1, max = #envs, default = 17, formatter = function(param) return env_formatter(param:get()) end, action = function(x) set_env(i, x) end}
 		params:add_control("attack" .. i, "env attack " .. i, controlspec.new(0.01, 15.0, 'lin', 0.01, 1.0,'s'))
 		params:set_action("attack" .. i, function(x) set_amp_atk(i - 1, x) end)
 		params:add_control("decay" .. i, "env decay " .. i, controlspec.new(0.01, 15.0, 'lin', 0.01, 1.0,'s'))
