@@ -21,7 +21,7 @@ local startTime
 local tau = math.pi * 2
 local newSpeed = false
 local options = {}
-local voices = 16
+local voices = 12
 local lfo = {}
 for i=1,voices do
   lfo[i] = {init=1, freq=1, counter=1, interpolator=1}
@@ -161,10 +161,10 @@ function add_params()
 end
 
 function build_scale()
-	notes = MusicUtil.generate_scale_of_length(params:get("root_note"), params:get("scale_mode"), 16)
-	local num_to_add = 16 - #notes
+	notes = MusicUtil.generate_scale_of_length(params:get("root_note"), params:get("scale_mode"),voices)
+	local num_to_add = voices - #notes
 	for i = 1, num_to_add do
-		table.insert(notes, notes[16 - num_to_add])
+		table.insert(notes, notes[voices - num_to_add])
 	end
 	-- why is this here?
   -- for i = 1,#lfo do
@@ -319,7 +319,7 @@ m.event = function(data)
 	local d = midi.to_msg(data)
 	if d.type == "cc" then
 		--set all the sliders + fm values
-		for i = 1,16 do
+		for i = 1,voices do
 			sliders[i] = (params:get("vol" .. i))*32 - 1
 			if sliders[i] > 32 then sliders[i] = 32 end
 			if sliders[i] < 0 then sliders[i] = 0 end
@@ -334,7 +334,7 @@ end
 
 function a.delta(n,delta)
   -- gross, refactor plz, I'm tired of typing the numbers.
-  -- this seems like a maths thing. something about a vector of 16
+  -- this seems like a maths thing. something about a vector of 16 (or the value of voices)
   -- into a 4x4 matrix? Computer, do what I say in English, not Lua
   local voice = 1
   if voice_quad == 1 then
@@ -480,7 +480,7 @@ function redraw()
 	screen.line_width(2.0)
 	screen.clear()
 
-	for i= 0, 15 do
+	for i = 0, voices - 1 do
 		if i == edit then
 			screen.level(15)
 		else
