@@ -29,7 +29,7 @@ end
 local voice_quad = 1
 
 local sliders = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-local edit = 1
+local edit = 0
 local accum = 1
 -- env_name, env_bias, attack, decay. bias of 1.0 is used to create a static drone
 local envs = {{"drone", 1.0, 1.0, 1.0},
@@ -158,6 +158,15 @@ function add_params()
 	end
 	params:default()
 	params:bang()
+end
+
+function wrap_number(number, length)
+  local o = (number + 1) % length
+  if o == 0 then
+    return length
+  else
+    return o
+  end
 end
 
 function build_scale()
@@ -370,7 +379,6 @@ function a.delta(n,delta)
 end
 
 function arc_redraw()
-  local brightness = 12
   a:all(0)
   -- there are 4 encoders and 16 lfos. Using the same voice_quad logic
   -- as the encoder delta, determine what quadrant we are in before setting
@@ -385,7 +393,12 @@ function arc_redraw()
     elseif voice_quad == 4 then
       seg = lfo[n + 12].ar/64
     end
-    a:segment(n, seg*tau, tau*seg+0.2, brightness)
+    if wrap_number(edit, 4) == n then
+      a:segment(n, seg*tau, tau*seg+0.2, 15)
+    else
+      -- print("editing " .. edit .. " current encoder " .. n)
+      a:segment(n, seg*tau, tau*seg+0.2, 6)
+    end
   end
   a:refresh()
 end
